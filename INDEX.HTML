@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: SEGOE UI;
+        }
+        .sidebar {
+            background-color: #606060;
+            width: 200px;
+            height: 100vh;
+            float: left;
+            padding: 10px;
+            color: white;
+        }
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #404040;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+        .main-content section {
+            display: none;
+        }
+        .main-content section.active {
+            display: block;
+        }
+        #calculator-2 {
+            display: none; /* إخفاء برنامج الحساب الثاني بشكل افتراضي */
+        }
+        .calculator-2 {
+            display: flex;
+        }
+        .calculator-2 .column {
+         display: flex;
+         flex-direction: column; /* تأكد من أن العمود عمودي */
+         align-items: flex-start; /* ضبط العناصر لتكون في البداية (اليسار) */
+         margin: 10px;
+         width: 250px;
+        }
+        .calculator-2 input {
+            margin-bottom: 5px;
+            width: 60px; /*  ضبط  عرض  الخانات  */
+        }
+        .calculator-2 .result-column {
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+        }
+        .calculator-2 .result {
+            display: flex; /*  استخدام  flexbox  لضبط  الموقع  */
+            align-items: center; /*  مراجعة  العناصر  رأسياً  */
+            margin-bottom: 0px;
+            width: 250px; /*  ضبط  عرض  الخانات  */
+            border-bottom: 4px solid black; /*  خط  فاصل  */
+        }
+      
+            margin-right: 5px;
+        }
+        .calculator-2 .result-button {
+            padding: 5px 50px;
+            cursor: pointer;
+        }
+        /*  إخفاء  الخط  الفاصل  من  آخر  خانة  */
+        .calculator-2 .result-column .result:last-child {
+            border-bottom: none; 
+        } 
+        .calculator-2 .result label {
+            margin-right: 5px; /*  مسافة  بين  الاسم  و  الخانة  */
+        
+        }
+        .calculator-2 .column label {
+            display: inline-block;
+            margin-right: 1px;
+        }
+        .calculator-2 .column input {
+            margin-bottom: 18px;
+            width: 150px;     
+        }
+        .calculator-2 .result-column .input-field { /*  تحديد  الـ div  لِـ input  و  label  */
+            display: flex; /*  ضبط  عرض  العناصر  */
+            align-items: center; /*  توسيط  العناصر  رأسياً  */
+            margin-bottom: 10px; /*  إضافة  مسافة  بين  العناصر  */
+        }
+        .calculator-2 .total-result-container { /*  تحديد  حاوية  النتيجة  المجمّعة  */
+
+            margin-bottom: 50px;
+        }
+        .calculator-2 .total-result-container span {
+            margin-left: 10px; /*  مسافة  بين  الاسم  و  النتيجة  */
+            font-weight: bold;
+			
+        }
+        /* Calculator styles */
+        .calculator-table {
+            width: 100%;
+            border-spacing: 10px;
+        }
+        .calculator-table input[type="text"] {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        /* Style for "Copier" buttons (Green with white text) */
+        .copy-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Green color */
+            color: white; /* White text */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Add rounded corners */
+        }
+        .output-field {
+            font-size: 18px;
+        }
+        #errorLabel {
+            color: red;
+        }
+        .suggestion-item {
+            padding: 5px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+        #suggestionsList {
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            background-color: #fff;
+            border: 1px solid #ccc;
+			font-size: 30px; 
+        }
+        /* Styles for suggestions list */
+        #suggestionsList {
+            position: absolute;
+            background-color: #660066
+            border: 1px solid #ccc;
+            width: 75%;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .suggestion-item {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #a93226;
+        }
+        /* ... Other styles ... */
+        /* Styles for "AUTRES" buttons */
+        #autres button {
+            display: block; /* Make buttons block elements for vertical stacking */
+            width: 100%; /* Make buttons take up full width */
+            margin-bottom: 10px; /* Add some space between buttons */
+            background-color: #808080; /* Same background color as sidebar buttons */
+            border: none; /* Remove default button border */
+            color: white; /* Set text color to white */
+            font-size: 30px; /* Same font size as sidebar buttons */
+            cursor: pointer; /* Add cursor pointer on hover */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease; /* Smooth color transition on hover */
+        }
+        /* Styles for "AUTRES" buttons on hover */
+        #autres button:hover {
+            background-color: #4CAF50; /* Green color on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h1>YASSINE STUDIO AI</h1>
+        <button onclick="showSection('calculator')">Calcule VAD TOTAL</button>
+        <button onclick="showSection('vad-art')">Calcule VAD ART</button>
+        <button onclick="showSection('em')">EM</button>
+        <button onclick="showSection('namen')">NAMEN</button>
+        <button onclick="showSection('autres')">AUTRES</button>
+    </div>
+
+    <div class="main-content">
+        <section id="calculator" class="active">
+            <h2>Calcule VAD TOTAL</h2>
+            <table class="calculator-table">
+                <tr>
+                    <td><label for="mf">MF:</label></td>
+                    <td><input type="text" id="mf" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
+                    <td><label for="tx">TX:</label></td>
+                    <td>
+                        <input type="text" id="tx" onfocus="عرضالاقتراحات()" oninput="احسب()" onpaste="handlePaste()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)">
+                        <button onclick="حفظالاقتراح()">Save</button>
+                    </td>
+                    <td><label for="mf-tx">MF * TX:</label></td>
+                    <td><span class="output-field" id="mfTxResult">0</span></td>
+                    <td><button class="copy-btn" onclick="copyToClipboard('mfTxResult')">Copier</button></td>
+                </tr>
+                <tr>
+                    <td><label for="fret">FRET:</label></td>
+                    <td><input type="text" id="fret" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
+                    <td></td>
+                    <td></td>
+                    <td><label for="ass">ASS:</label></td>
+                    <td><span class="output-field" id="assResult">0</span></td>
+                    <td><button class="copy-btn" onclick="copyToClipboard('assResult')">Copier</button></td>
+                </tr>
+                <tr>
+                    <td><label for="acc">ACC:</label></td>
+                    <td><input type="text" id="acc" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
+                    <td></td>
+                    <td></td>
+                    <td><label for="cof">COF:</label></td>
+                    <td><span class="output-field" id="cofResult">0.0000</span></td>
+                    <td><button class="copy-btn" onclick="copyToClipboard('cofResult')">Copier</button></td>
+                </tr>
+                <tr>
+                    <td><label for="vad">VAD:</label></td>
+                    <td><span class="output-field" id="vadResult">0</span></td>
+                    <td><button class="copy-btn" onclick="copyToClipboard('vadResult')">Copier</button></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="VAA">VAA:</label></td>
+                    <td><input type="text" id="VAA" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
+                    <td></td>
+                    <td></td>
+                    <td><label for="coff">COFF:</label></td>
+                    <td><span class="output-field" id="COFFResult">0.0000</span></td>
+                    <td><button class="copy-btn" onclick="copyToClipboard('COFFResult')">Copier</button></td>
+                </tr>
+            </table>
+            <div id="errorLabel"></div>
+            <div id="suggestionsList"></div>
+        </section>
+
+        <section id="vad-art">
+            <h2>Calcule VAD ART</h2>
+<div class="calculator-2">
+            <div class="column">
+                <div class="total-result-container">
+                     <span style="font-size: 15px; color: DimGrey;">MF T</span> <!-- حجم الخط ولون MF -->
+                     <span class="total-result" id="totalMF" style="font-size: 30px; color: DimGrey;">0.00</span> <!-- حجم الخط ولون النتيجة -->
+                </div>
+                <div class="input-field"> 
+                    <label>MF 1:</label> <input type="number" id="input1" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 2:</label> <input type="number" id="input2" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 3:</label> <input type="number" id="input3" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 4:</label> <input type="number" id="input4" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 5:</label> <input type="number" id="input5" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 6:</label> <input type="number" id="input6" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 7:</label> <input type="number" id="input7" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 8:</label> <input type="number" id="input8" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 9:</label> <input type="number" id="input9" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 10:</label> <input type="number" id="input10" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 11:</label> <input type="number" id="input11" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 12:</label> <input type="number" id="input12" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 13:</label> <input type="number" id="input13" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 14:</label> <input type="number" id="input14" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 15:</label> <input type="number" id="input15" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 16:</label> <input type="number" id="input16" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 17:</label> <input type="number" id="input17" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 18:</label> <input type="number" id="input18" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 19:</label> <input type="number" id="input19" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 20:</label> <input type="number" id="input20" oninput="calculate2()">
+                </div>
+            </div>
+           
+				
+             <div class="column">			 
+			   </br>
+			   </br> 
+			   </br>
+			   </br>
+			    <span>C O F</span>
+             <input type="number" id="input21" oninput="calculate2()">
+             <button onclick="handlePaste()">Paste</button>
+             </div>
+            <div class="result-column">
+               
+            <div class="total-result-container">
+                   <span style="font-size: 15px; color: DimGrey;">VAD T</span> <!-- حجم الخط ولون MF -->
+                     <span class="total-result" id="totalVAD" style="font-size: 30px; color: DimGrey;">0.00</span> <!-- حجم الخط ولون النتيجة -->
+                </div>
+                <div class="result" id="result1">
+                    <div class="input-field"> 
+                        <label>VAD 1:</label> <span class="result-value" id="resultValue1">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue1')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result2">
+                    <div class="input-field"> 
+                        <label>VAD 2:</label> <span class="result-value" id="resultValue2">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue2')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result3">
+                    <div class="input-field"> 
+                        <label>VAD 3:</label> <span class="result-value" id="resultValue3">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue3')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result4">
+                    <div class="input-field"> 
+                        <label>VAD 4:</label> <span class="result-value" id="resultValue4">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue4')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result5">
+                    <div class="input-field"> 
+                        <label>VAD 5:</label> <span class="result-value" id="resultValue5">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue5')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result6">
+                    <div class="input-field"> 
+                        <label>VAD 6:</label> <span class="result-value" id="resultValue6">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue6')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result7">
+                    <div class="input-field"> 
+                        <label>VAD 7:</label> <span class="result-value" id="resultValue7">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue7')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result8">
+                    <div class="input-field"> 
+                        <label>VAD 8:</label> <span class="result-value" id="resultValue8">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue8')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result9">
+                    <div class="input-field"> 
+                        <label>VAD 9:</label> <span class="result-value" id="resultValue9">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue9')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result10">
+                    <div class="input-field"> 
+                        <label>VAD 10:</label> <span class="result-value" id="resultValue10">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue10')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result11">
+                    <div class="input-field"> 
+                        <label>VAD 11:</label> <span class="result-value" id="resultValue11">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue11')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result12">
+                    <div class="input-field"> 
+                        <label>VAD 12:</label> <span class="result-value" id="resultValue12">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue12')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result13">
+                    <div class="input-field"> 
+                        <label>VAD 13:</label> <span class="result-value" id="resultValue13">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue13')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result14">
+                    <div class="input-field"> 
+                        <label>VAD 14:</label> <span class="result-value" id="resultValue14">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue14')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result15">
+                    <div class="input-field"> 
+                        <label>VAD 15:</label> <span class="result-value" id="resultValue15">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue15')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result16">
+                    <div class="input-field"> 
+                        <label>VAD 16:</label> <span class="result-value" id="resultValue16">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue16')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result17">
+                    <div class="input-field"> 
+                        <label>VAD 17:</label> <span class="result-value" id="resultValue17">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue17')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result18">
+                    <div class="input-field"> 
+                        <label>VAD 18:</label> <span class="result-value" id="resultValue18">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue18')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result19">
+                    <div class="input-field"> 
+                        <label>VAD 19:</label> <span class="result-value" id="resultValue19">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue19')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result20">
+                    <div class="input-field"> 
+                        <label>VAD 20:</label> <span class="result-value" id="resultValue20">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue20')">Copy</button>
+                    </div>
+                
+            </div>
+        </div>
+        </section>
+
+        <section id="em">
+            <h2>EM</h2>
+            <p>Contenu de la section EM</p>
+        </section>
+
+        <section id="namen">
+            <h2>NAMEN</h2>
+            <p>Contenu de la section NAMEN</p>
+        </section>
+
+        <section id="autres">
+            <h2>AUTRES</h2>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">301</button>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">302</button>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">303</button>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">304</button>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">305</button>
+            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">306</button>
+        </section>
+    </div>
+
+    <script>
+    // JavaScript code for calculator and section display
+    let suggestions = []; // Array to store suggestions (empty now)
+
+    // Function to show a specific section
+    function showSection(sectionId) {
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(sectionId).classList.add('active');
+    }
+
+    // دالة حساب برنامج الحساب الثاني
+    function calculate2() {
+        // احصل على قيم الخانات
+        let inputValues = [];
+        for (let i = 1; i <= 20; i++) {
+            inputValues.push(parseFloat(document.getElementById(`input${i}`).value) || 0); 
+        }
+
+        let multiplier = parseFloat(document.getElementById(`input21`).value) || 0; 
+
+        let totalMF = 0;
+        for (let i = 0; i < 20; i++) {
+            let result = inputValues[i] * multiplier;
+            // تقريب النتيجة إلى أعلى
+            result = Math.ceil(result);
+            // إزالة الفاصلة 
+            result = result.toString().replace('.', '');
+            document.getElementById(`resultValue${i + 1}`).textContent = result;
+            totalMF += inputValues[i];
+        }
+        // تقريب totalMF إلى 2 رقم بعد الفاصلة 
+        totalMF = totalMF.toFixed(2);
+        document.getElementById('totalMF').textContent = totalMF.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+        let totalVAD = 0;
+        for (let i = 0; i < 20; i++) {
+            totalVAD += parseFloat(document.getElementById(`resultValue${i + 1}`).textContent);
+            // Limite à 2 chiffres après la virgule après avoir effectué toutes les additions
+            totalVAD = totalVAD.toFixed(2);
+            document.getElementById('totalVAD').textContent = totalVAD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+        document.getElementById('totalVAD').textContent = totalVAD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // دالة الحساب الأساسية
+    function احسب() {
+        const mf = parseFloat(document.getElementById('mf').value.replace(',', '.')) || 0;
+        const tx = parseFloat(document.getElementById('tx').value.replace(',', '.')) || 0;
+        const fret = parseFloat(document.getElementById('fret').value.replace(',', '.')) || 0;
+        const acc = parseFloat(document.getElementById('acc').value.replace(',', '.')) || 0;
+        const VAA = parseFloat(document.getElementById('VAA').value.replace(',', '.')) || 1;
+
+        //  التحقق من صحة الإدخال:
+        if (isNaN(mf) || isNaN(tx) || isNaN(fret) || isNaN(acc) || isNaN(VAA)) {
+            document.getElementById('errorLabel').textContent = "الرجاء إدخال أرقام صحيحة في جميع الحقول.";
+            return;
+        }
+
+        try {
+            const e = mf * tx + fret; // Fret is added in this step
+            const ass = Math.ceil(e * 0.3 / 100);
+            const vad = Math.ceil(e + ass + acc);
+            const cof = vad / mf;
+            const COFF = vad / VAA;
+            const mfTxResult = Math.ceil(mf * tx);
+
+            document.getElementById('assResult').textContent = ass;
+            document.getElementById('vadResult').textContent = vad;
+            document.getElementById('COFFResult').textContent = COFF.toFixed(4); // أربعة أرقام عشرية
+            document.getElementById('cofResult').textContent = cof.toFixed(4); // أربعة أرقام عشرية
+            document.getElementById('mfTxResult').textContent = mfTxResult;
+            document.getElementById('errorLabel').textContent = "";
+        } catch (error) {
+            document.getElementById('errorLabel').textContent = "حدث خطأ في الحساب.";
+        }
+    }
+
+    // دالة نسخ النص إلى الحافظة
+    function copyToClipboard(textToCopy) {
+        navigator.clipboard.writeText(textToCopy); // بدون رسالة
+    }
+
+    // دالة حفظ الاقتراح
+    function حفظالاقتراح() {
+        let txValue = document.getElementById('tx').value.trim();
+        txValue = txValue.replace(',', '.');
+
+        if (txValue !== '' && !suggestions.includes(txValue)) {
+            suggestions.push(txValue);
+            updateSuggestionsList();
+            document.getElementById('tx').value = ''; // Clear the input field
+        }
+    }
+
+    // دالة تحديث قائمة الاقتراحات
+    function updateSuggestionsList() {
+        const suggestionsContainer = document.getElementById('suggestionsList');
+        suggestionsContainer.innerHTML = ""; // مسح القائمة الحالية
+
+        suggestions.forEach(suggestion => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('suggestion-item');
+            suggestionItem.textContent = suggestion.replace('.', ','); 
+            suggestionItem.onclick = function() {
+                document.getElementById('tx').value = suggestion;
+                احسب(); // حساب النتيجة عند اختيار الاقتراح
+                hideSuggestionsList(); // إخفاء قائمة الاقتراحات بعد الاختيار
+            };
+
+            suggestionsContainer.appendChild(suggestionItem);
+        });
+
+        // إظهار قائمة الاقتراحات
+        document.getElementById('suggestionsList').style.display = 'block';
+    }
+
+    // دالة عرض قائمة الاقتراحات عند النقر على وسط حقل TX
+    function عرضالاقتراحات() {
+        updateSuggestionsList();
+    }
+
+    // دالة إخفاء قائمة الاقتراحات
+    function hideSuggestionsList() {
+        document.getElementById('suggestionsList').style.display = 'none';
+    }
+
+    // إضافة استجابة للنقر خارج قائمة الاقتراحات
+    document.addEventListener('click', function(event) {
+        const suggestionsList = document.getElementById('suggestionsList');
+        const txInput = document.getElementById('tx');
+
+        // التحقق مما إذا كان النقر خارج قائمة الاقتراحات أو خارج حقل TX
+        if (event.target !== suggestionsList && event.target !== txInput) {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    function handlePaste() {
+        navigator.clipboard.readText().then(text => {
+            document.getElementById("tx").value = text;
+            احسب();
+        }).catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+        });
+    }
+
+    // Function to check if a key press is a number or a decimal point
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        const charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode === 46) { // Check for decimal point
+            return true;
+        }
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) { // Check for numbers
+            return false;
+        }
+        return true;
+    }
+  </script>
+</body>
+</html> 
