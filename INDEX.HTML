@@ -1,642 +1,474 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>les Données</title>
     <style>
         body {
-            font-family: SEGOE UI;
+            background-color: #ffe3ec;
+            font-family: "Segoe UI Variable Text", sans-serif;
         }
-        .sidebar {
-            background-color: #606060;
-            width: 200px;
-            height: 100vh;
-            float: left;
-            padding: 10px;
-            color: white;
-        }
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            background-color: #404040;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-        .main-content section {
-            display: none;
-        }
-        .main-content section.active {
-            display: block;
-        }
-        #calculator-2 {
-            display: none; /* إخفاء برنامج الحساب الثاني بشكل افتراضي */
-        }
-        .calculator-2 {
-            display: flex;
-        }
-        .calculator-2 .column {
-         display: flex;
-         flex-direction: column; /* تأكد من أن العمود عمودي */
-         align-items: flex-start; /* ضبط العناصر لتكون في البداية (اليسار) */
-         margin: 10px;
-         width: 250px;
-        }
-        .calculator-2 input {
-            margin-bottom: 5px;
-            width: 60px; /*  ضبط  عرض  الخانات  */
-        }
-        .calculator-2 .result-column {
-            display: flex;
-            flex-direction: column;
-            margin: 10px;
-        }
-        .calculator-2 .result {
-            display: flex; /*  استخدام  flexbox  لضبط  الموقع  */
-            align-items: center; /*  مراجعة  العناصر  رأسياً  */
-            margin-bottom: 0px;
-            width: 250px; /*  ضبط  عرض  الخانات  */
-            border-bottom: 4px solid black; /*  خط  فاصل  */
-        }
-      
-            margin-right: 5px;
-        }
-        .calculator-2 .result-button {
-            padding: 5px 50px;
-            cursor: pointer;
-        }
-        /*  إخفاء  الخط  الفاصل  من  آخر  خانة  */
-        .calculator-2 .result-column .result:last-child {
-            border-bottom: none; 
-        } 
-        .calculator-2 .result label {
-            margin-right: 5px; /*  مسافة  بين  الاسم  و  الخانة  */
-        
-        }
-        .calculator-2 .column label {
-            display: inline-block;
-            margin-right: 1px;
-        }
-        .calculator-2 .column input {
-            margin-bottom: 18px;
-            width: 150px;     
-        }
-        .calculator-2 .result-column .input-field { /*  تحديد  الـ div  لِـ input  و  label  */
-            display: flex; /*  ضبط  عرض  العناصر  */
-            align-items: center; /*  توسيط  العناصر  رأسياً  */
-            margin-bottom: 10px; /*  إضافة  مسافة  بين  العناصر  */
-        }
-        .calculator-2 .total-result-container { /*  تحديد  حاوية  النتيجة  المجمّعة  */
 
-            margin-bottom: 50px;
+        h2 {
+            font-size: 4em;
+            font-weight: 600;
+            color: #ff0958;
+            text-align: center;
         }
-        .calculator-2 .total-result-container span {
-            margin-left: 10px; /*  مسافة  بين  الاسم  و  النتيجة  */
-            font-weight: bold;
-			
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            color: #000;
+            font-size: 1em;
+            line-height: 1.5;
         }
-        /* Calculator styles */
-        .calculator-table {
-            width: 100%;
-            border-spacing: 10px;
-        }
-        .calculator-table input[type="text"] {
-            width: 100px;
+
+        th, td {
+            border: 1px solid #ca36c1;
             padding: 10px;
-            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
         }
-        /* Style for "Copier" buttons (Green with white text) */
-        .copy-btn {
-            padding: 8px 16px;
-            font-size: 14px;
+
+        th {
+            background-color: #cb70c6;
+        }
+
+        td {
+            background-color: #f7c6f4;
+        }
+
+        .filter-wrapper {
+            position: relative;
+            text-align: center;
+        }
+
+        .filter-wrapper button {
+            padding: 8px;
+            background-color: #eaafea;
+            border: 2px solid #ff0958;
             cursor: pointer;
-            background-color: #4CAF50; /* Green color */
-            color: white; /* White text */
-            border: none; /* Remove default border */
-            border-radius: 5px; /* Add rounded corners */
+            width: 100%;
         }
-        .output-field {
-            font-size: 18px;
-        }
-        #errorLabel {
-            color: red;
-        }
-        .suggestion-item {
-            padding: 5px;
-            background-color: #f1f1f1;
-            cursor: pointer;
-        }
-        #suggestionsList {
-            display: none;
+
+        .suggestions {
             position: absolute;
-            z-index: 1000;
-            background-color: #fff;
-            border: 1px solid #ccc;
-			font-size: 30px; 
-        }
-        /* Styles for suggestions list */
-        #suggestionsList {
-            position: absolute;
-            background-color: #660066
-            border: 1px solid #ccc;
-            width: 75%;
-            max-height: 200px;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #f9cfff;
+            border: 1px solid #b874c2;
+            max-height: 150px;
             overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            z-index: 2;
+        }
+
+        .suggestions li {
+            padding: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .suggestions li:hover {
+            background-color: #eb5182;
+        }
+
+        .hidden {
             display: none;
         }
-        .suggestion-item {
-            padding: 5px 10px;
+
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid #b1949c;
+        }
+
+        /* Styles pour le bouton "X" */
+        #resetButton {
+            padding: 8px 15px;
+            background-color: #ff0958;
+            color: white;
+            border: none;
             cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .suggestion-item:hover {
-            background-color: #a93226;
-        }
-        /* ... Other styles ... */
-        /* Styles for "AUTRES" buttons */
-        #autres button {
-            display: block; /* Make buttons block elements for vertical stacking */
-            width: 100%; /* Make buttons take up full width */
-            margin-bottom: 10px; /* Add some space between buttons */
-            background-color: #808080; /* Same background color as sidebar buttons */
-            border: none; /* Remove default button border */
-            color: white; /* Set text color to white */
-            font-size: 30px; /* Same font size as sidebar buttons */
-            cursor: pointer; /* Add cursor pointer on hover */
-            border-radius: 5px; /* Rounded corners */
-            transition: background-color 0.3s ease; /* Smooth color transition on hover */
-        }
-        /* Styles for "AUTRES" buttons on hover */
-        #autres button:hover {
-            background-color: #4CAF50; /* Green color on hover */
+
+        #resetButton:hover {
+            background-color: #997c81;
         }
     </style>
 </head>
 <body>
+    <h2>Tableau de Safaa</h2>
+    <!-- Bouton Reset en haut -->
+    <button id="resetButton" onclick="resetFilter()">❤</button>
 
-    <div class="sidebar">
-        <h1>YASSINE STUDIO AI</h1>
-        <button onclick="showSection('calculator')">Calcule VAD TOTAL</button>
-        <button onclick="showSection('vad-art')">Calcule VAD ART</button>
-        <button onclick="showSection('em')">EM</button>
-        <button onclick="showSection('namen')">NAMEN</button>
-        <button onclick="showSection('autres')">AUTRES</button>
-    </div>
-
-    <div class="main-content">
-        <section id="calculator" class="active">
-            <h2>Calcule VAD TOTAL</h2>
-            <table class="calculator-table">
+    <div>
+        <table>
+            <thead>
                 <tr>
-                    <td><label for="mf">MF:</label></td>
-                    <td><input type="text" id="mf" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
-                    <td><label for="tx">TX:</label></td>
-                    <td>
-                        <input type="text" id="tx" onfocus="عرضالاقتراحات()" oninput="احسب()" onpaste="handlePaste()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)">
-                        <button onclick="حفظالاقتراح()">Save</button>
+                    <th>Bureau</th>
+                    <th>RÉGIME</th>
+                    <th>EXPORTATEUR</th>
+                    <th>IMPORTATEUR FAT</th>
+                    <th>IMPORTATEUR LIV</th>
+                    <th>COMPANY </th>
+                    <th>DUM</th>
+                    <th>ANNÉE</th>
+                </tr>
+                <tr>
+                    <td class="filter-wrapper">
+                        <button id="filterBureau" onclick="showSuggestions('bureau')">Bureau</button>
+                        <ul id="bureauSuggestions" class="suggestions hidden"></ul>
                     </td>
-                    <td><label for="mf-tx">MF * TX:</label></td>
-                    <td><span class="output-field" id="mfTxResult">0</span></td>
-                    <td><button class="copy-btn" onclick="copyToClipboard('mfTxResult')">Copier</button></td>
+                    <td class="filter-wrapper">
+                        <button id="filterRegime" onclick="showSuggestions('regime')">Régime</button>
+                        <ul id="regimeSuggestions" class="suggestions hidden"></ul>
+                    </td>
+                    <td><input type="text" id="filterExp" placeholder="Expéditeur" onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterImpFct" placeholder="Import FC" onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterImpLiv" placeholder="Import Liv" onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterCOMPANY " placeholder="COMPANY " onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterDum" placeholder="DUM" onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterAnnee" placeholder="Année" onkeyup="filterTable()"></td>
                 </tr>
-                <tr>
-                    <td><label for="fret">FRET:</label></td>
-                    <td><input type="text" id="fret" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
-                    <td></td>
-                    <td></td>
-                    <td><label for="ass">ASS:</label></td>
-                    <td><span class="output-field" id="assResult">0</span></td>
-                    <td><button class="copy-btn" onclick="copyToClipboard('assResult')">Copier</button></td>
-                </tr>
-                <tr>
-                    <td><label for="acc">ACC:</label></td>
-                    <td><input type="text" id="acc" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
-                    <td></td>
-                    <td></td>
-                    <td><label for="cof">COF:</label></td>
-                    <td><span class="output-field" id="cofResult">0.0000</span></td>
-                    <td><button class="copy-btn" onclick="copyToClipboard('cofResult')">Copier</button></td>
-                </tr>
-                <tr>
-                    <td><label for="vad">VAD:</label></td>
-                    <td><span class="output-field" id="vadResult">0</span></td>
-                    <td><button class="copy-btn" onclick="copyToClipboard('vadResult')">Copier</button></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><label for="VAA">VAA:</label></td>
-                    <td><input type="text" id="VAA" oninput="احسب()" inputmode="numeric" pattern="[0-9]*\.?[0-9]*" onkeypress="return isNumber(event)"></td>
-                    <td></td>
-                    <td></td>
-                    <td><label for="coff">COFF:</label></td>
-                    <td><span class="output-field" id="COFFResult">0.0000</span></td>
-                    <td><button class="copy-btn" onclick="copyToClipboard('COFFResult')">Copier</button></td>
-                </tr>
-            </table>
-            <div id="errorLabel"></div>
-            <div id="suggestionsList"></div>
-        </section>
+            </thead>
+        <tbody id="dataTable">
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td> AIRBUS ATLANTIC</td><td>STELIA MERIGNAC</td><td>BANSARD</td><td>2189</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>072</td><td>CASABLANCA AERONAUTIQUE</td><td>FIGEAC AERO</td><td></td><td>BANSARD</td><td>1641</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA SAINT NAZAIRE</td><td>BANSARD</td><td>2246</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA AEROSPACE ST</td><td>BANSARD</td><td>1882</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>PORTELLI PRODUCTIONS</td><td></td><td>BANSARD</td><td>2209</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>FIGEAC AERO</td><td></td><td>BANSARD</td><td>2205</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>SN AUVERGNE AERONAUTIQUE</td><td></td><td>BANSARD</td><td>2090</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>AIRBUS ATLANTIC ST NAZAIRE</td><td>BANSARD</td><td>2091</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA ROCHEFORT</td><td>BANSARD</td><td>2086</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>PFW AEROSPACE GMBH</td><td></td><td>BANSARD</td><td>6410</td><td>2023</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA MERIGNAC</td><td>BANSARD</td><td>2871</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>AIRBUS ATLANTIC LOGISTICS HUB WEST</td><td>BANSARD</td><td>6993</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>SIMRA</td><td></td><td>GEODIS</td><td>2260</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>SUMA GROUPE</td><td></td><td>M&M</td><td>2264</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>DAHER AEROSPACE</td><td></td><td>M&M</td><td>2269</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>DAHER AEROSPACE</td><td>DACHER MARSEILLE CARGOPLUS</td><td>M&M</td><td>2267</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>AIRBUS ATLANTIC</td><td></td><td>M&M</td><td>2263</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>072</td><td>SIMRA MAROC</td><td>CCA TUNISIE</td><td>DACHER MARSEILLE CARGOPLUS</td><td>M&M</td><td>117</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>CCA TUNISIE</td><td>DACHER MARSEILLE CARGOPLUS</td><td>M&M</td><td>1654</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>TECALEMIT AEROSPACE</td><td></td><td>M&M</td><td>8717</td><td>2022</td>
+</tr>
+<tr>
+    <td>300</td><td>077</td><td>FIGEACAERO MAROC</td><td>HEXAGON METROLOGY</td><td></td><td>BANSARD</td><td>65</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>FIGEACAERO</td><td></td><td>BANSARD</td><td>558</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>FIGEACAERO</td><td>FIGEAC AERO PICARDIE</td><td>BANSARD</td><td>557</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>060</td><td>FIGEACAERO MAROC</td><td>FIGEAC AERO</td><td></td><td>BANSARD</td><td>2590</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>FIGEACAERO</td><td>FIGEAC AERO TUNISIE</td><td>BANSARD</td><td>549</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>SAFRAN AIRCRAFT ANGINES</td><td></td><td>BANSARD</td><td>548</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>RATIER FIGEAC</td><td></td><td>BANSARD</td><td>547</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>077</td><td>FIGEACAERO MAROC</td><td>DMG MORI FRANCE SAS</td><td></td><td>BANSARD</td><td>64</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>DMG MORI FRANCE SAS</td><td></td><td>BANSARD</td><td>546</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>UMP-M</td><td>RATIER FIGEAC</td><td></td><td>GEFCO</td><td>2234</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>BLONDEL AEROLOGISTIQUE</td><td>BANSARD</td><td>5057</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>CORSE COMPOSITE AERONAUTIQUE</td><td></td><td>BANSARD</td><td>7598</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC ST NAZAIRE</td><td>STELIA AEROSPACE ST</td><td>BANSARD</td><td>7595</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC LOGISTICS HUB WEST</td><td>STELIA AEROSPACE</td><td>BANSARD</td><td>7594</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>072</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>AIRBUS ATLANTIC LOGISTICS HUB WEST</td><td>BANSARD</td><td>8013</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>SIMRA</td><td>F-TECH PYRENEES</td><td></td><td>CHRONOPOST</td><td>6196</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>SIMRA</td><td>SAFRAN ELECTRICAL & POWER SAS</td><td></td><td>DHL</td><td>6197</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>SIMRA</td><td>SAFRAN ELECTRICIL & POWER USA</td><td>SAFRAN EP MEXIQUE</td><td>DHL</td><td>6198</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>072</td><td>SIMRA MAROC</td><td>SUMA GROUPE</td><td></td><td>M&M</td><td>5872</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>070</td><td>SIMRA MAROC</td><td>CORSE COMPOSITE AERONAUTIQUES</td><td></td><td>M&M</td><td>8028</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>MECABRIVE INDUSTRIES</td><td>MECABRIVE INDUSTRIE SAS</td><td>BANSARD</td><td>1976</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>751</td><td>FIGEACAERO MAROC</td><td>FIGEAC AERO PICARDIE</td><td></td><td>BANSARD</td><td>1979</td><td>2024</td>
+</tr>
+<tr>
+    <td>302</td><td>070</td><td>UMP-M</td><td>WEARE</td><td>BLONDEL AEROLOGISTIQUE</td><td>DACSHER</td><td>1511</td><td>2024</td>
+</tr>
+<tr>
+    <td>300</td><td>072</td><td>SIMRA MAROC</td><td>NIMROD INDUSTRIE</td><td></td><td>BANSARD</td><td>1506</td><td>2024</td>
+</tr>
+<tr>
+    <td>302</td><td>070</td><td>UMP-M</td><td>WEARE</td><td>AIRBUS ATLANTIC</td><td>DACSHER</td><td>1509</td><td>2024</td>
+</tr>
+<tr>
+    <td>302</td><td>070</td><td>UMP-M</td><td>WEARE</td><td>HUB BLONDEL-BL2A SAINT NAZAIRE</td><td>DACSHER</td><td>1510</td><td>2024</td>
+</tr>
+<tr>
+    <td>302</td><td>070</td><td>UMP-M</td><td>WEARE</td><td>AIRBUS ATLANTIC LOGISTICS HUB WEST</td><td>DACSHER</td><td>1505</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td>BOMBARDIER AEROSPACE</td><td>DHL</td><td>29414</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>751</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td>BOMBARDIER AEROSPACE</td><td>DHL</td><td>6374</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>FIGEAC AERO TUNISIE</td><td></td><td>AUTRES</td><td>6321</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>FIGEACAERO MAROC</td><td>FIGEAC AERO</td><td></td><td>AUTRES</td><td>26659</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>751</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td>BOMBARDIER CANADA</td><td>DHL</td><td>6337</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>SIMRA</td><td>STRATA</td><td></td><td>AUTRES</td><td>6227</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>BOMBARDIER INC</td><td>BOMBARDIER AEROSPACE</td><td>DHL</td><td>6228</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>ISRAEL AEROSPACE INDUSTRIES</td><td></td><td>DHL</td><td>6214</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td>BOMBARDIER AEROSPACE MEXIQUE</td><td>DHL</td><td>28609</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td>BOMBARDIER CANADA</td><td>DHL</td><td>28612</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>SIMRA</td><td>COLLINS AEROSPACE</td><td></td><td>AUTRES</td><td>5680</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>ISRAEL AEROSPACE INDUSTRIES</td><td></td><td>DHL</td><td>27962</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>751</td><td>FIGEACAERO MAROC</td><td>BOMBARDIER</td><td></td><td>DHL</td><td>6016</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>POTEZ COMPOSITES</td><td></td><td>AUTRES</td><td>27928</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>BOMBARDIER INC</td><td>BOMBARDIER AEROSPACE MEXIQUE</td><td>DHL</td><td>28609</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>SPIRIT AGROSYSTEMES</td><td></td><td>AUTRES</td><td>28609</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>751</td><td>FIGEACAERO MAROC</td><td>SAMI FIGEA AERO MANUFACTURING AEROSPACE</td><td></td><td>AUTRES</td><td>5605</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS SAS-MATERIAL LOGISTICSES</td><td></td><td>DHL</td><td>26831</td><td>2024</td>
+</tr>
+<tr>
+    <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>SOOSUNG AIRFRAMZ IND LTD</td><td></td><td>AUTRES</td><td>26505</td><td>2024</td>
+</tr>
+ </tr>
+        </tbody>
+    </table>
 
-        <section id="vad-art">
-            <h2>Calcule VAD ART</h2>
-<div class="calculator-2">
-            <div class="column">
-                <div class="total-result-container">
-                     <span style="font-size: 15px; color: DimGrey;">MF T</span> <!-- حجم الخط ولون MF -->
-                     <span class="total-result" id="totalMF" style="font-size: 30px; color: DimGrey;">0.00</span> <!-- حجم الخط ولون النتيجة -->
-                </div>
-                <div class="input-field"> 
-                    <label>MF 1:</label> <input type="number" id="input1" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 2:</label> <input type="number" id="input2" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 3:</label> <input type="number" id="input3" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 4:</label> <input type="number" id="input4" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 5:</label> <input type="number" id="input5" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 6:</label> <input type="number" id="input6" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 7:</label> <input type="number" id="input7" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 8:</label> <input type="number" id="input8" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 9:</label> <input type="number" id="input9" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 10:</label> <input type="number" id="input10" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 11:</label> <input type="number" id="input11" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 12:</label> <input type="number" id="input12" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 13:</label> <input type="number" id="input13" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 14:</label> <input type="number" id="input14" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 15:</label> <input type="number" id="input15" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 16:</label> <input type="number" id="input16" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 17:</label> <input type="number" id="input17" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 18:</label> <input type="number" id="input18" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 19:</label> <input type="number" id="input19" oninput="calculate2()">
-                </div>
-                <div class="input-field"> 
-                    <label>MF 20:</label> <input type="number" id="input20" oninput="calculate2()">
-                </div>
-            </div>
-           
-				
-             <div class="column">			 
-			   </br>
-			   </br> 
-			   </br>
-			   </br>
-			    <span>C O F</span>
-             <input type="number" id="input21" oninput="calculate2()">
-             <button onclick="handlePaste()">Paste</button>
-             </div>
-            <div class="result-column">
-               
-            <div class="total-result-container">
-                   <span style="font-size: 15px; color: DimGrey;">VAD T</span> <!-- حجم الخط ولون MF -->
-                     <span class="total-result" id="totalVAD" style="font-size: 30px; color: DimGrey;">0.00</span> <!-- حجم الخط ولون النتيجة -->
-                </div>
-                <div class="result" id="result1">
-                    <div class="input-field"> 
-                        <label>VAD 1:</label> <span class="result-value" id="resultValue1">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue1')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result2">
-                    <div class="input-field"> 
-                        <label>VAD 2:</label> <span class="result-value" id="resultValue2">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue2')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result3">
-                    <div class="input-field"> 
-                        <label>VAD 3:</label> <span class="result-value" id="resultValue3">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue3')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result4">
-                    <div class="input-field"> 
-                        <label>VAD 4:</label> <span class="result-value" id="resultValue4">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue4')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result5">
-                    <div class="input-field"> 
-                        <label>VAD 5:</label> <span class="result-value" id="resultValue5">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue5')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result6">
-                    <div class="input-field"> 
-                        <label>VAD 6:</label> <span class="result-value" id="resultValue6">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue6')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result7">
-                    <div class="input-field"> 
-                        <label>VAD 7:</label> <span class="result-value" id="resultValue7">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue7')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result8">
-                    <div class="input-field"> 
-                        <label>VAD 8:</label> <span class="result-value" id="resultValue8">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue8')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result9">
-                    <div class="input-field"> 
-                        <label>VAD 9:</label> <span class="result-value" id="resultValue9">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue9')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result10">
-                    <div class="input-field"> 
-                        <label>VAD 10:</label> <span class="result-value" id="resultValue10">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue10')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result11">
-                    <div class="input-field"> 
-                        <label>VAD 11:</label> <span class="result-value" id="resultValue11">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue11')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result12">
-                    <div class="input-field"> 
-                        <label>VAD 12:</label> <span class="result-value" id="resultValue12">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue12')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result13">
-                    <div class="input-field"> 
-                        <label>VAD 13:</label> <span class="result-value" id="resultValue13">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue13')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result14">
-                    <div class="input-field"> 
-                        <label>VAD 14:</label> <span class="result-value" id="resultValue14">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue14')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result15">
-                    <div class="input-field"> 
-                        <label>VAD 15:</label> <span class="result-value" id="resultValue15">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue15')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result16">
-                    <div class="input-field"> 
-                        <label>VAD 16:</label> <span class="result-value" id="resultValue16">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue16')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result17">
-                    <div class="input-field"> 
-                        <label>VAD 17:</label> <span class="result-value" id="resultValue17">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue17')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result18">
-                    <div class="input-field"> 
-                        <label>VAD 18:</label> <span class="result-value" id="resultValue18">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue18')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result19">
-                    <div class="input-field"> 
-                        <label>VAD 19:</label> <span class="result-value" id="resultValue19">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue19')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result20">
-                    <div class="input-field"> 
-                        <label>VAD 20:</label> <span class="result-value" id="resultValue20">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue20')">Copy</button>
-                    </div>
-                
-            </div>
-        </div>
-        </section>
-
-        <section id="em">
-            <h2>EM</h2>
-            <p>Contenu de la section EM</p>
-        </section>
-
-        <section id="namen">
-            <h2>NAMEN</h2>
-            <p>Contenu de la section NAMEN</p>
-        </section>
-
-        <section id="autres">
-            <h2>AUTRES</h2>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">301</button>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">302</button>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">303</button>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">304</button>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">305</button>
-            <button class="autres-btn" onclick="copyToClipboard(this.textContent)">306</button>
-        </section>
+        </table>
     </div>
 
     <script>
-    // JavaScript code for calculator and section display
-    let suggestions = []; // Array to store suggestions (empty now)
+        // Afficher les suggestions basées sur Bureau ou Régime
+        function showSuggestions(type) {
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
+            const uniqueValues = new Set();
+            let listId;
 
-    // Function to show a specific section
-    function showSection(sectionId) {
-        document.querySelectorAll('.main-content section').forEach(section => {
-            section.classList.remove('active');
-        });
-        document.getElementById(sectionId).classList.add('active');
-    }
+            if (type === 'bureau') {
+                listId = 'bureauSuggestions';
+                for (let i = 0; i < rows.length; i++) {
+                    const bureauValue = rows[i].getElementsByTagName('td')[0].innerText.trim();
+                    uniqueValues.add(bureauValue);
+                }
+            } else if (type === 'regime') {
+                listId = 'regimeSuggestions';
+                for (let i = 0; i < rows.length; i++) {
+                    const regimeValue = rows[i].getElementsByTagName('td')[1].innerText.trim();
+                    uniqueValues.add(regimeValue);
+                }
+            }
 
-    // دالة حساب برنامج الحساب الثاني
-    function calculate2() {
-        // احصل على قيم الخانات
-        let inputValues = [];
-        for (let i = 1; i <= 20; i++) {
-            inputValues.push(parseFloat(document.getElementById(`input${i}`).value) || 0); 
+            const list = document.getElementById(listId);
+            list.innerHTML = '';
+            uniqueValues.forEach(value => {
+                const li = document.createElement('li');
+                li.innerText = value;
+                li.onclick = function(event) {
+                    event.stopPropagation(); // Empêche la fermeture des suggestions
+                    filterTableBySuggestion(type, value); // Applique le filtre
+                    list.classList.add('hidden');
+                };
+                list.appendChild(li);
+            });
+
+            list.classList.remove('hidden');
         }
 
-        let multiplier = parseFloat(document.getElementById(`input21`).value) || 0; 
-
-        let totalMF = 0;
-        for (let i = 0; i < 20; i++) {
-            let result = inputValues[i] * multiplier;
-            // تقريب النتيجة إلى أعلى
-            result = Math.ceil(result);
-            // إزالة الفاصلة 
-            result = result.toString().replace('.', '');
-            document.getElementById(`resultValue${i + 1}`).textContent = result;
-            totalMF += inputValues[i];
-        }
-        // تقريب totalMF إلى 2 رقم بعد الفاصلة 
-        totalMF = totalMF.toFixed(2);
-        document.getElementById('totalMF').textContent = totalMF.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
-        let totalVAD = 0;
-        for (let i = 0; i < 20; i++) {
-            totalVAD += parseFloat(document.getElementById(`resultValue${i + 1}`).textContent);
-            // Limite à 2 chiffres après la virgule après avoir effectué toutes les additions
-            totalVAD = totalVAD.toFixed(2);
-            document.getElementById('totalVAD').textContent = totalVAD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-        }
-        document.getElementById('totalVAD').textContent = totalVAD.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    }
-
-    // دالة الحساب الأساسية
-    function احسب() {
-        const mf = parseFloat(document.getElementById('mf').value.replace(',', '.')) || 0;
-        const tx = parseFloat(document.getElementById('tx').value.replace(',', '.')) || 0;
-        const fret = parseFloat(document.getElementById('fret').value.replace(',', '.')) || 0;
-        const acc = parseFloat(document.getElementById('acc').value.replace(',', '.')) || 0;
-        const VAA = parseFloat(document.getElementById('VAA').value.replace(',', '.')) || 1;
-
-        //  التحقق من صحة الإدخال:
-        if (isNaN(mf) || isNaN(tx) || isNaN(fret) || isNaN(acc) || isNaN(VAA)) {
-            document.getElementById('errorLabel').textContent = "الرجاء إدخال أرقام صحيحة في جميع الحقول.";
-            return;
-        }
-
-        try {
-            const e = mf * tx + fret; // Fret is added in this step
-            const ass = Math.ceil(e * 0.3 / 100);
-            const vad = Math.ceil(e + ass + acc);
-            const cof = vad / mf;
-            const COFF = vad / VAA;
-            const mfTxResult = Math.ceil(mf * tx);
-
-            document.getElementById('assResult').textContent = ass;
-            document.getElementById('vadResult').textContent = vad;
-            document.getElementById('COFFResult').textContent = COFF.toFixed(4); // أربعة أرقام عشرية
-            document.getElementById('cofResult').textContent = cof.toFixed(4); // أربعة أرقام عشرية
-            document.getElementById('mfTxResult').textContent = mfTxResult;
-            document.getElementById('errorLabel').textContent = "";
-        } catch (error) {
-            document.getElementById('errorLabel').textContent = "حدث خطأ في الحساب.";
-        }
-    }
-
-    // دالة نسخ النص إلى الحافظة
-    function copyToClipboard(textToCopy) {
-        navigator.clipboard.writeText(textToCopy); // بدون رسالة
-    }
-
-    // دالة حفظ الاقتراح
-    function حفظالاقتراح() {
-        let txValue = document.getElementById('tx').value.trim();
-        txValue = txValue.replace(',', '.');
-
-        if (txValue !== '' && !suggestions.includes(txValue)) {
-            suggestions.push(txValue);
-            updateSuggestionsList();
-            document.getElementById('tx').value = ''; // Clear the input field
-        }
-    }
-
-    // دالة تحديث قائمة الاقتراحات
-    function updateSuggestionsList() {
-        const suggestionsContainer = document.getElementById('suggestionsList');
-        suggestionsContainer.innerHTML = ""; // مسح القائمة الحالية
-
-        suggestions.forEach(suggestion => {
-            const suggestionItem = document.createElement('div');
-            suggestionItem.classList.add('suggestion-item');
-            suggestionItem.textContent = suggestion.replace('.', ','); 
-            suggestionItem.onclick = function() {
-                document.getElementById('tx').value = suggestion;
-                احسب(); // حساب النتيجة عند اختيار الاقتراح
-                hideSuggestionsList(); // إخفاء قائمة الاقتراحات بعد الاختيار
-            };
-
-            suggestionsContainer.appendChild(suggestionItem);
+        // Cacher les suggestions quand on clique en dehors
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.filter-wrapper') && !event.target.closest('.suggestions')) {
+                document.querySelectorAll('.suggestions').forEach(list => {
+                    list.classList.add('hidden');
+                });
+            }
         });
 
-        // إظهار قائمة الاقتراحات
-        document.getElementById('suggestionsList').style.display = 'block';
-    }
+        // les lignes du tableau selon la colonne Bureau ou Régime (pour les suggestions)
+        function filterTableBySuggestion(type, value) {
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
 
-    // دالة عرض قائمة الاقتراحات عند النقر على وسط حقل TX
-    function عرضالاقتراحات() {
-        updateSuggestionsList();
-    }
+            for (let i = 0; i < rows.length; i++) {
+                const cols = rows[i].getElementsByTagName('td');
+                let rowVisible = true;
 
-    // دالة إخفاء قائمة الاقتراحات
-    function hideSuggestionsList() {
-        document.getElementById('suggestionsList').style.display = 'none';
-    }
+                if (type === 'bureau') {
+                    rowVisible = cols[0].innerText.trim() === value; // Vérifie si la valeur du Bureau correspond
+                } else if (type === 'regime') {
+                    rowVisible = cols[1].innerText.trim() === value; // Vérifie si la valeur du RÉGIME correspond
+                }
 
-    // إضافة استجابة للنقر خارج قائمة الاقتراحات
-    document.addEventListener('click', function(event) {
-        const suggestionsList = document.getElementById('suggestionsList');
-        const txInput = document.getElementById('tx');
+                // Vérifie les filtres pour les autres colonnes
+                for (let j = 2; j < cols.length; j++) {
+                    const filterValue = document.getElementById(`filter${getFilterColumnName(j)}`).value.trim();
+                    if (filterValue && !cols[j].innerText.toUpperCase().startsWith(filterValue.toUpperCase())) {
+                        rowVisible = false;
+                        break;
+                    }
+                }
 
-        // التحقق مما إذا كان النقر خارج قائمة الاقتراحات أو خارج حقل TX
-        if (event.target !== suggestionsList && event.target !== txInput) {
-            suggestionsList.style.display = 'none';
+                rows[i].style.display = rowVisible ? '' : 'none';
+            }
         }
-    });
 
-    function handlePaste() {
-        navigator.clipboard.readText().then(text => {
-            document.getElementById("tx").value = text;
-            احسب();
-        }).catch(err => {
-            console.error('Failed to read clipboard contents: ', err);
-        });
-    }
+        // les colonnes à l'aide des champs texte
+        function filterTable() {
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
 
-    // Function to check if a key press is a number or a decimal point
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        const charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode === 46) { // Check for decimal point
-            return true;
+            for (let i = 0; i < rows.length; i++) {
+                const cols = rows[i].getElementsByTagName('td');
+                let rowVisible = true;
+
+                for (let j = 2; j < cols.length; j++) { // Commence à à partir de la troisième colonne
+                    const filterValue = document.getElementById(`filter${getFilterColumnName(j)}`).value.trim();
+                    if (filterValue && !cols[j].innerText.toUpperCase().startsWith(filterValue.toUpperCase())) {
+                        rowVisible = false;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = rowVisible ? '' : 'none';
+            }
         }
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) { // Check for numbers
-            return false;
+
+        // Fonction de réinitialisation
+        function resetFilter() {
+            // Réinitialiser les champs de filtrage
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = '';
+            });
+
+            // Réinitialiser les suggestions (cacher)
+            document.getElementById('bureauSuggestions').classList.add('hidden');
+            document.getElementById('regimeSuggestions').classList.add('hidden');
+
+            // Afficher toutes les lignes
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].style.display = '';
+            }
         }
-        return true;
-    }
-  </script>
+
+        // Fonction pour obtenir le nom de la colonne en fonction de l'index
+        function getFilterColumnName(index) {
+            const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY ', 'Dum', 'Annee'];
+            return columnNames[index - 2]; // -2 pour ajuster l'index (commence à 2)
+        }
+    </script>
 </body>
-</html> 
+</html>
