@@ -92,7 +92,7 @@
 
         /* Styles pour le bouton "X" */
         #resetButton {
-            padding: 8px 15px;
+            padding: 12px 20px; /* تكبير حشو الزر */
             background-color: #ff0958;
             color: white;
             border: none;
@@ -101,12 +101,14 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
+            font-size: 2em; /* تكبير حجم الكتابة */
+            font-weight: bold; /* جعل الكتابة غليظة */
         }
 
         #resetButton:hover {
             background-color: #997c81;
         }
-    </style>
+      </style>
 </head>
 <body>
     <h2>Tableau de Safaa</h2>
@@ -138,12 +140,12 @@
                     <td><input type="text" id="filterExp" placeholder="Expéditeur" onkeyup="filterTable()"></td>
                     <td><input type="text" id="filterImpFct" placeholder="Import FC" onkeyup="filterTable()"></td>
                     <td><input type="text" id="filterImpLiv" placeholder="Import Liv" onkeyup="filterTable()"></td>
-                    <td><input type="text" id="filterCOMPANY " placeholder="COMPANY " onkeyup="filterTable()"></td>
+                    <td><input type="text" id="filterCOMPANY" placeholder="COMPANY " onkeyup="filterTable()"></td>
                     <td><input type="text" id="filterDum" placeholder="DUM" onkeyup="filterTable()"></td>
                     <td><input type="text" id="filterAnnee" placeholder="Année" onkeyup="filterTable()"></td>
                 </tr>
             </thead>
-        <tbody id="dataTable">
+           <tbody id="dataTable">
 <tr>
     <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td> AIRBUS ATLANTIC</td><td>STELIA MERIGNAC</td><td>BANSARD</td><td>2189</td><td>2024</td>
 </tr>
@@ -342,14 +344,14 @@
 <tr>
     <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>SOOSUNG AIRFRAMZ IND LTD</td><td></td><td>AUTRES</td><td>26505</td><td>2024</td>
 </tr>
- </tr>
-        </tbody>
-    </table>
 
+            </tbody>
         </table>
     </div>
 
     <script>
+        let activeFilters = {}; // Object to store active filters
+
         // Afficher les suggestions basées sur Bureau ou Régime
         function showSuggestions(type) {
             const table = document.getElementById('dataTable');
@@ -378,13 +380,19 @@
                 li.innerText = value;
                 li.onclick = function(event) {
                     event.stopPropagation(); // Empêche la fermeture des suggestions
-                    filterTableBySuggestion(type, value); // Applique le filtre
+                    applyFilter(type, value); // Applique le filtre
                     list.classList.add('hidden');
                 };
                 list.appendChild(li);
             });
 
             list.classList.remove('hidden');
+        }
+
+        // Applique le filtre
+        function applyFilter(type, value) {
+            activeFilters[type] = value; // Stocke le filtre actif
+            filterTable();
         }
 
         // Cacher les suggestions quand on clique en dehors
@@ -397,34 +405,6 @@
         });
 
         // les lignes du tableau selon la colonne Bureau ou Régime (pour les suggestions)
-        function filterTableBySuggestion(type, value) {
-            const table = document.getElementById('dataTable');
-            const rows = table.getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const cols = rows[i].getElementsByTagName('td');
-                let rowVisible = true;
-
-                if (type === 'bureau') {
-                    rowVisible = cols[0].innerText.trim() === value; // Vérifie si la valeur du Bureau correspond
-                } else if (type === 'regime') {
-                    rowVisible = cols[1].innerText.trim() === value; // Vérifie si la valeur du RÉGIME correspond
-                }
-
-                // Vérifie les filtres pour les autres colonnes
-                for (let j = 2; j < cols.length; j++) {
-                    const filterValue = document.getElementById(`filter${getFilterColumnName(j)}`).value.trim();
-                    if (filterValue && !cols[j].innerText.toUpperCase().startsWith(filterValue.toUpperCase())) {
-                        rowVisible = false;
-                        break;
-                    }
-                }
-
-                rows[i].style.display = rowVisible ? '' : 'none';
-            }
-        }
-
-        // les colonnes à l'aide des champs texte
         function filterTable() {
             const table = document.getElementById('dataTable');
             const rows = table.getElementsByTagName('tr');
@@ -433,7 +413,18 @@
                 const cols = rows[i].getElementsByTagName('td');
                 let rowVisible = true;
 
-                for (let j = 2; j < cols.length; j++) { // Commence à à partir de la troisième colonne
+                // Vérifie si le Bureau correspond
+                if (activeFilters.bureau && cols[0].innerText.trim() !== activeFilters.bureau) {
+                    rowVisible = false;
+                }
+
+                // Vérifie si le Régime correspond
+                if (activeFilters.regime && cols[1].innerText.trim() !== activeFilters.regime) {
+                    rowVisible = false;
+                }
+
+                // Vérifie les autres colonnes
+                for (let j = 2; j < cols.length; j++) {
                     const filterValue = document.getElementById(`filter${getFilterColumnName(j)}`).value.trim();
                     if (filterValue && !cols[j].innerText.toUpperCase().startsWith(filterValue.toUpperCase())) {
                         rowVisible = false;
@@ -447,16 +438,12 @@
 
         // Fonction de réinitialisation
         function resetFilter() {
-            // Réinitialiser les champs de filtrage
+            activeFilters = {}; // Réinitialise les filtres actifs
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 input.value = '';
             });
-
-            // Réinitialiser les suggestions (cacher)
             document.getElementById('bureauSuggestions').classList.add('hidden');
             document.getElementById('regimeSuggestions').classList.add('hidden');
-
-            // Afficher toutes les lignes
             const table = document.getElementById('dataTable');
             const rows = table.getElementsByTagName('tr');
             for (let i = 0; i < rows.length; i++) {
@@ -466,8 +453,8 @@
 
         // Fonction pour obtenir le nom de la colonne en fonction de l'index
         function getFilterColumnName(index) {
-            const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY ', 'Dum', 'Annee'];
-            return columnNames[index - 2]; // -2 pour ajuster l'index (commence à 2)
+            const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY', 'Dum', 'Annee'];
+            return columnNames[index - 2];
         }
     </script>
 </body>
