@@ -90,9 +90,8 @@
             border: 1px solid #b1949c;
         }
 
-        /* Styles pour le bouton "X" */
         #resetButton {
-            padding: 12px 20px; /* تكبير حشو الزر */
+            padding: 12px 20px;
             background-color: #ff0958;
             color: white;
             border: none;
@@ -101,19 +100,114 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            font-size: 2em; /* تكبير حجم الكتابة */
-            font-weight: bold; /* جعل الكتابة غليظة */
+            font-size: 2em;
+            font-weight: bold;
         }
 
         #resetButton:hover {
             background-color: #997c81;
         }
-      </style>
+
+        /* Styles personnalisés pour les champs B et E en vert */
+        #caseB, #caseE {
+            color: green;
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 150px; /* Largeur augmentée */
+        }
+		/* Styles personnalisés pour les champs A*/
+        #caseA {
+            
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 150px; /* Largeur augmentée */
+        }
+
+        /* Styles personnalisés pour les champs C et F en bleu */
+        #caseC, #caseF {
+            color: blue;
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 150px; /* Largeur augmentée */
+        }
+
+        /* Section pour les cases à droite */
+        .extra-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .extra-section .column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .extra-section input[type="text"] {
+            width: 150px;
+        }
+
+        /* Boutons alignés et avec les couleurs des champs E et F */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Rapprochement des boutons */
+        }
+
+        /* Bouton USD en vert */
+        #copyButtonE {
+            padding: 10px 120px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        /* Bouton EUR en bleu */
+        #copyButtonF {
+            padding: 10px 120px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        /* Effet hover pour les boutons */
+        #copyButtonE:hover {
+            background-color: darkgreen;
+        }
+
+        #copyButtonF:hover {
+            background-color: darkblue;
+        }
+
+    </style>
 </head>
 <body>
     <h2>Tableau de Safaa</h2>
-    <!-- Bouton Reset en haut -->
     <button id="resetButton" onclick="resetFilter()">❤</button>
+
+    <div class="extra-section">
+        <div class="column">
+            <input type="text" id="caseA" placeholder="Case A" oninput="calculateResults()">
+        </div>
+        <div class="column">
+            <input type="text" id="caseB" placeholder="Case B" oninput="calculateResults()">
+            <input type="text" id="caseC" placeholder="Case C" oninput="calculateResults()">
+        </div>
+        <div class="column">
+            <input type="text" id="caseE" placeholder="Case E" readonly>
+            <input type="text" id="caseF" placeholder="Case F" readonly>
+        </div>
+        <div class="buttons">
+            <button id="copyButtonE" onclick="copyContent('E')">USD</button>
+            <button id="copyButtonF" onclick="copyContent('F')">EUR</button>
+        </div>
+    </div>
 
     <div>
         <table>
@@ -145,16 +239,7 @@
                     <td><input type="text" id="filterAnnee" placeholder="Année" onkeyup="filterTable()"></td>
                 </tr>
             </thead>
-           <tbody id="dataTable">
-<tr>
-    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td> AIRBUS ATLANTIC</td><td>STELIA MERIGNAC</td><td>BANSARD</td><td>2189</td><td>2024</td>
-</tr>
-<tr>
-    <td>300</td><td>072</td><td>CASABLANCA AERONAUTIQUE</td><td>FIGEAC AERO</td><td></td><td>BANSARD</td><td>1641</td><td>2024</td>
-</tr>
-<tr>
-    <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA SAINT NAZAIRE</td><td>BANSARD</td><td>2246</td><td>2024</td>
-</tr>
+
 <tr>
     <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA AEROSPACE ST</td><td>BANSARD</td><td>1882</td><td>2024</td>
 </tr>
@@ -410,17 +495,32 @@
 <tr> 
     <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>LABORATOIRE ECCI</td><td></td><td>CHRONOPOST</td><td>29627</td><td>2024</td>
 </tr>
-
-
-
-
-
             </tbody>
         </table>
     </div>
 
     <script>
-        let activeFilters = {}; // Object to store active filters
+        function copyContent(caseId) {
+            // Fonction pour copier le contenu des cases E et F
+            const caseValue = document.getElementById(`case${caseId}`).value;
+            navigator.clipboard.writeText(caseValue).then(function() {
+            }, function() {
+                alert('Erreur lors de la copie.');
+            });
+        }
+
+        function calculateResults() {
+            const a = parseFloat(document.getElementById('caseA').value) || 0;
+            const b = parseFloat(document.getElementById('caseB').value) || 0;
+            const c = parseFloat(document.getElementById('caseC').value) || 0;
+
+            // Utiliser Math.round() pour arrondir les résultats
+            document.getElementById('caseE').value = Math.round(a * b);
+            document.getElementById('caseF').value = Math.round(a * c);
+        }
+
+        // Reste du script déjà existant
+       let activeFilters = {}; // Object to store active filters
 
         // Afficher les suggestions basées sur Bureau ou Régime
         function showSuggestions(type) {
@@ -506,26 +606,28 @@
             }
         }
 
-        // Fonction de réinitialisation
         function resetFilter() {
-            activeFilters = {}; // Réinitialise les filtres actifs
-            document.querySelectorAll('input[type="text"]').forEach(input => {
-                input.value = '';
-            });
-            document.getElementById('bureauSuggestions').classList.add('hidden');
-            document.getElementById('regimeSuggestions').classList.add('hidden');
-            const table = document.getElementById('dataTable');
-            const rows = table.getElementsByTagName('tr');
-            for (let i = 0; i < rows.length; i++) {
-                rows[i].style.display = '';
-            }
-        }
+    activeFilters = {}; // Réinitialise les filtres actifs
 
-        // Fonction pour obtenir le nom de la colonne en fonction de l'index
-        function getFilterColumnName(index) {
-            const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY', 'Dum', 'Annee'];
-            return columnNames[index - 2];
+    // Réinitialise uniquement les champs autres que B, C, E, et F
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        if (input.id !== 'caseB' && input.id !== 'caseC' && input.id !== 'caseE' && input.id !== 'caseF') {
+            input.value = '';
         }
+    });
+
+    // Masque les suggestions si elles sont visibles
+    document.getElementById('bureauSuggestions').classList.add('hidden');
+    document.getElementById('regimeSuggestions').classList.add('hidden');
+
+    // Affiche toutes les lignes du tableau
+    const table = document.getElementById('dataTable');
+    const rows = table.getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].style.display = '';
+    }
+}
+
     </script>
 </body>
 </html>
