@@ -630,12 +630,23 @@ function calculateResults() {
     const isBValid = /^\d+(\.\d{1,4})?$/.test(bInput);
     const isCValid = /^\d+(\.\d+)?$/.test(cInput);
 
-    // Convertir les valeurs en nombres après vérification
+    // إذا كانت المدخلات غير صحيحة، تعيين القيم إلى 0
+    if (!isAValid) {
+        document.getElementById('caseA').value = ''; // إعادة تعيين المدخل
+    }
+    if (!isBValid) {
+        document.getElementById('caseB').value = ''; // إعادة تعيين المدخل
+    }
+    if (!isCValid) {
+        document.getElementById('caseC').value = ''; // إعادة تعيين المدخل
+    }
+
+    // تحويل القيم إلى أرقام بعد التحقق
     const a = isAValid ? parseFloat(aInput) : 0;
     const b = isBValid ? parseFloat(bInput) : 0;
     const c = isCValid ? parseFloat(cInput) : 0;
 
-    // Utiliser Math.round() pour arrondir les résultats
+    // استخدام Math.round() لتمرير النتائج
     document.getElementById('caseE').value = Math.round(a * b);
     document.getElementById('caseF').value = Math.round(a * c);
 }
