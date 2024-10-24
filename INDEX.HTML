@@ -16,13 +16,20 @@
         font-family: "Segoe UI Variable Text", sans-serif;
     }
 
+@keyframes colorChange {
+    0% { color: #ff0958; }    /* اللون الوردي الداكن */
+    50% { color: #000000; }   /* اللون الأسود في منتصف الطريق */
+    100% { color: #ff0958; }   /* العودة إلى اللون الوردي الداكن */
+}
+
         h2 {
-    font-size: 4em;
-    font-weight: 600;
-    color: #ff0958; /* Couleur du texte */
-    text-align: center;
-    padding: 10px; /* Optionnel : ajoute de l'espace autour du texte */
-    }
+            font-size: 3em;
+            font-weight: 900;
+            text-align: center;
+            padding: 0px; /* إضافة مسافة حول النص */
+            animation: colorChange 8s infinite; /* تشغيل الأنيميشن لمدة 6 ثوانٍ بشكل متكرر */
+        }
+}
 
         table {
             width: 80%;
@@ -98,9 +105,8 @@
         }
 
         #resetButton {
-            padding: 12px 20px;
-            background-color: #ff0958;
-            color: white;
+            padding: 6px 200px;
+            background-color: #E9ACEE;         
             border: none;
             cursor: pointer;
             margin-top: 10px;
@@ -110,6 +116,7 @@
             font-size: 2em;
             font-weight: bold;
 			border-radius: 15px;
+			animation: colorChange 8s infinite; /* تشغيل الأنيميشن لمدة 6 ثوانٍ بشكل متكرر */
         }
 
         #resetButton:hover {
@@ -164,12 +171,12 @@
         .buttons {
             display: flex;
             flex-direction: column;
-            gap: 5px; /* Rapprochement des boutons */
+            gap: 35px; /* Rapprochement des boutons */
         }
 
         /* Bouton USD en vert */
         #copyButtonE {
-            padding: 10px 120px;
+            padding: 10px 60px;
             background-color: green;
             color: white;
             border: none;
@@ -180,7 +187,7 @@
 
         /* Bouton EUR en bleu */
         #copyButtonF {
-            padding: 10px 120px;
+            padding: 10px 60px;
             background-color: blue;
             color: white;
             border: none;
@@ -197,6 +204,23 @@
         #copyButtonF:hover {
             background-color: darkblue;
         }
+		        }
+        .input-container {
+            display: flex;
+            align-items: center; /* محاذاة العناصر عمودياً */
+        }
+        input {
+            margin: 10px;
+            padding: 10px;
+            font-size: 1.2em;
+            width: 200px; /* تحديد عرض المدخل */
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 1.2em;
+            margin-left: 10px; /* مسافة بين الزر والمدخل */
+            cursor: pointer; /* تغيير المؤشر عند المرور فوق الزر */
+        }
     </style>
 </head>
 <body>
@@ -204,6 +228,17 @@
     <button id="resetButton" onclick="resetFilter()">❤</button>
 
     <div class="extra-section">
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+
         <div class="column">
             <input type="text" id="caseA" placeholder="MT/DEVISE" oninput="calculateResults()">
         </div>
@@ -219,8 +254,50 @@
             <button id="copyButtonE" onclick="copyContent('E')">USD</button>
             <button id="copyButtonF" onclick="copyContent('F')">EUR</button>
         </div>
+		<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
     </div>
-
+	    <div class="extra-section">
+		<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+        <div class="column">
+        <input type="text" id="entry1" placeholder="POIDS BRUT" oninput="validateInput(event)" />
+		        </div>
+        <div class="column">
+        <input type="text" id="entry2" placeholder="POIDS NET" disabled />
+		        </div>
+        <div class="column">
+      <button onclick="copyToClipboard()" style="width: 150px; height: 50px; border-radius: 15px; background-color: red; color: white; font-size: 16px; border: none; cursor: pointer;">KG</button>
+		</div>
+		<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+	<div class="column">
+	</div>
+    </div>
     <div>
         <table>
             <thead>
@@ -252,6 +329,7 @@
                 </tr>
             </thead>
            <tbody id="dataTable">
+  <tbody id="dataTable">
 
 <tr>
     <td>300</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>STELIA AEROSPACE ST</td><td>BANSARD</td><td>1882</td><td>2024</td>
@@ -509,26 +587,24 @@
     <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>LABORATOIRE ECCI</td><td></td><td>CHRONOPOST</td><td>29627</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>MHI CANADA AEROSPACE INC</td><td></td><td>CHRONOPOST</td><td>3982</td><td>2024</td>
+    <td>301</td><td>60</td><td>CASABLANCA AERONAUTIQUE</td><td>BOMBARDIER INC</td><td>BOMBARDIER AEROSPACE MEXICO</td><td>DHL</td><td>30120</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>070</td><td>SIMRA MAROC</td><td>AIRBUS ATLANTIC COMPOSITES</td><td></td><td>CHRONOPOST</td><td>3980</td><td>2024</td>
+    <td>301</td><td>70</td><td>CASABLANCA AERONAUTIQUE</td><td>AIRBUS ATLANTIC</td><td>BLONDEL AEROLOGISTIQUE</td><td>AUTRES</td><td>6418</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>070</td><td>SIMRA MAROC</td><td>STACEM</td><td></td><td>CHRONOPOST</td><td>3981</td><td>2024</td>
+    <td>301</td><td>70</td><td>CASABLANCA AERONAUTIQUE</td><td>SAFRAN NACELLES FLORANGE</td><td>GT LOGISTICS</td><td>CHRONOPOST</td><td>6451</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>070</td><td>SIMRA MAROC</td><td>CORSE COMPOSITES AERONAUTIQUES</td><td></td><td>CHRONOPOST</td><td>6311</td><td>2024</td>
+    <td>301</td><td>70</td><td>SIMRA MAROC</td><td>MECACHROME TOULOUSE</td><td></td><td>CHRONOPOST</td><td>6422</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>072</td><td>SIMRA MAROC</td><td>FACC OPERATIONS GMBH</td><td></td><td>DHL</td><td>2460</td><td>2024</td>
+    <td>301</td><td>60</td><td>CASABLANCA AERONAUTIQUE</td><td>MHI CANADA AEROSPACE INC</td><td></td><td>CHRONOPOST</td><td>30152</td><td>2024</td>
 </tr>
 <tr> 
-    <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>STELIA AEROSPACE COMPOSITES</td><td></td><td>CHRONOPOST</td><td>6258</td><td>2024</td>
+    <td>301</td><td>70</td><td>CASABLANCA AERONAUTIQUE</td><td>PFW AEROSPACE GMBH</td><td></td><td>CHRONOPOST</td><td>6343</td><td>2024</td>
 </tr>
-<tr> 
-    <td>301</td><td>060</td><td>CASABLANCA AERONAUTIQUE</td><td>LABORATOIRE ECCI</td><td></td><td>CHRONOPOST</td><td>29627</td><td>2024</td>
-</tr>
+
 
             </tbody>
         </table>
@@ -665,7 +741,66 @@
             const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY', 'Dum', 'Annee'];
             return columnNames[index - 2];
         }
+		        function validateInput(event) {
+            const input = event.target.value;
+            const valid = /^\d+(\.\d{0,2})?$/.test(input);
+
+            if (!valid) {
+                event.target.value = input.slice(0, -1);
+            } else {
+                calculate_result();
+            }
+        }
+
+   function calculate_result() {
+            const entry1 = document.getElementById('entry1');
+            const entry2 = document.getElementById('entry2');
+            let result_str;
+
+            const number1 = parseFloat(entry1.value);
+
+            if (!isNaN(number1)) {
+                if (0 <= number1 && number1 < 0.50) {
+                    result_str = number1.toFixed(2);
+                } else if (0.50 <= number1 && number1 < 2) {
+                    const truncatedValue = Math.floor(number1 * 10) / 10;
+                    const finalResult = truncatedValue - 0.1;
+                    result_str = finalResult.toFixed(1);
+                } else if (2 <= number1 && number1 <= 5) {
+                    const truncatedValue = Math.floor(number1 * 10) / 10;
+                    const finalResult = truncatedValue - 0.5;
+                    result_str = finalResult.toFixed(1);
+                } else if (5.01 <= number1 && number1 <= 9.99) {
+                    const truncatedValue = Math.floor(number1);
+                    const finalResult = truncatedValue - 1;
+                    result_str = finalResult.toFixed(0);
+                } else if (number1 >= 10) {
+                    const finalResult = Math.floor(number1 * 0.9);
+                    result_str = finalResult.toString();
+                } else {
+                    result_str = "";
+                }
+            } else {
+                result_str = "";
+            }
+
+            entry2.value = result_str;
+        }
+
+        function copyToClipboard() {
+            const entry2 = document.getElementById('entry2');
+            navigator.clipboard.writeText(entry2.value) // استخدام Clipboard API
+                .then(() => {
+                    // يمكنك إضافة إشعار هنا إذا أردت
+                })
+                .catch(err => {
+                    console.error('فشل النسخ: ', err);
+                });
+        }
     </script>
 </body>
 </html>
 
+
+         
+    
