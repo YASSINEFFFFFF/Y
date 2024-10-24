@@ -607,28 +607,31 @@
             }
         }
 
+        // Fonction de réinitialisation
         function resetFilter() {
-    activeFilters = {}; // Réinitialise les filtres actifs
+             activeFilters = {}; // Réinitialise les filtres actifs
 
-    // Réinitialise uniquement les champs autres que B, C, E, et F
-    document.querySelectorAll('input[type="text"]').forEach(input => {
-        if (input.id !== 'caseB' && input.id !== 'caseC' && input.id !== 'caseE' && input.id !== 'caseF') {
+            // Réinitialise uniquement les champs autres que B, C, E, et F
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+            if (input.id !== 'caseB' && input.id !== 'caseC' && input.id !== 'caseE' && input.id !== 'caseF') {
             input.value = '';
+            }
+            });
+            document.getElementById('bureauSuggestions').classList.add('hidden');
+            document.getElementById('regimeSuggestions').classList.add('hidden');
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].style.display = '';
+            }
         }
-    });
 
-    // Masque les suggestions si elles sont visibles
-    document.getElementById('bureauSuggestions').classList.add('hidden');
-    document.getElementById('regimeSuggestions').classList.add('hidden');
-
-    // Affiche toutes les lignes du tableau
-    const table = document.getElementById('dataTable');
-    const rows = table.getElementsByTagName('tr');
-    for (let i = 0; i < rows.length; i++) {
-        rows[i].style.display = '';
-    }
-}
-
+        // Fonction pour obtenir le nom de la colonne en fonction de l'index
+        function getFilterColumnName(index) {
+            const columnNames = ['Exp', 'ImpFct', 'ImpLiv', 'COMPANY', 'Dum', 'Annee'];
+            return columnNames[index - 2];
+        }
     </script>
 </body>
 </html>
+
