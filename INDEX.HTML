@@ -619,40 +619,24 @@
     });
 }
 
-function calculateResults() {
-    // Fonction pour obtenir les valeurs tout en supprimant les espaces
-    const aInput = document.getElementById('caseA').value.trim().replace(/\s+/g, '');
-    const bInput = document.getElementById('caseB').value.trim().replace(/\s+/g, '');
-    const cInput = document.getElementById('caseC').value.trim().replace(/\s+/g, '');
+  function copyContent(caseId) {
+            // Fonction pour copier le contenu des cases E et F
+            const caseValue = document.getElementById(`case${caseId}`).value;
+            navigator.clipboard.writeText(caseValue).then(function() {
+            }, function() {
+                alert('Erreur lors de la copie.');
+            });
+        }
 
-    // Vérifier la validité de a (deux décimales), b (quatre décimales), et c (numérique)
-    const isAValid = /^\d+(\.\d{1,2})?$/.test(aInput);
-    const isBValid = /^\d+(\.\d{1,4})?$/.test(bInput);
-    const isCValid = /^\d+(\.\d+)?$/.test(cInput);
+        function calculateResults() {
+            const a = parseFloat(document.getElementById('caseA').value) || 0;
+            const b = parseFloat(document.getElementById('caseB').value) || 0;
+            const c = parseFloat(document.getElementById('caseC').value) || 0;
 
-    // إذا كانت المدخلات غير صحيحة، تعيين القيم إلى 0
-    if (!isAValid) {
-        document.getElementById('caseA').value = ''; // إعادة تعيين المدخل
-    }
-    if (!isBValid) {
-        document.getElementById('caseB').value = ''; // إعادة تعيين المدخل
-    }
-    if (!isCValid) {
-        document.getElementById('caseC').value = ''; // إعادة تعيين المدخل
-    }
-
-    // تحويل القيم إلى أرقام بعد التحقق
-    const a = isAValid ? parseFloat(aInput) : 0;
-    const b = isBValid ? parseFloat(bInput) : 0;
-    const c = isCValid ? parseFloat(cInput) : 0;
-
-    // استخدام Math.round() لتمرير النتائج
-    document.getElementById('caseE').value = Math.round(a * b);
-    document.getElementById('caseF').value = Math.round(a * c);
-}
-
-
-
+            // Utiliser Math.round() pour arrondir les résultats
+            document.getElementById('caseE').value = Math.round(a * b);
+            document.getElementById('caseF').value = Math.round(a * c);
+        }
         // Reste du script déjà existant
        let activeFilters = {}; // Object to store active filters
 
