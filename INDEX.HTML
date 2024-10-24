@@ -604,22 +604,12 @@
     <td>301</td><td>070</td><td>CASABLANCA AERONAUTIQUE</td><td>PFW AEROSPACE GMBH</td><td></td><td>CHRONOPOST</td><td>6343</td><td>2024</td>
 </tr>
 
-            </tbody>
+                       </tbody>
         </table>
     </div>
 
     <script>
-       function copyContent(caseId) {
-    // Fonction pour copier le contenu des cases E et F
-    const caseValue = document.getElementById(`case${caseId}`).value;
-    navigator.clipboard.writeText(caseValue).then(function() {
-        // Copie réussie
-    }, function() {
-        alert('Erreur lors de la copie.');
-    });
-}
-
-  function copyContent(caseId) {
+        function copyContent(caseId) {
             // Fonction pour copier le contenu des cases E et F
             const caseValue = document.getElementById(`case${caseId}`).value;
             navigator.clipboard.writeText(caseValue).then(function() {
@@ -637,6 +627,7 @@
             document.getElementById('caseE').value = Math.round(a * b);
             document.getElementById('caseF').value = Math.round(a * c);
         }
+
         // Reste du script déjà existant
        let activeFilters = {}; // Object to store active filters
 
@@ -807,4 +798,5 @@
     </script>
 </body>
 </html>
+
 
